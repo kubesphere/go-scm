@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -62,6 +63,7 @@ func (c *wrapper) doForm(ctx context.Context, method, path string, headerParams 
 		Method:   method,
 		Path:     path,
 		PostForm: formParams,
+		Header: http.Header{},
 	}
 
 	// add header parameters, if any

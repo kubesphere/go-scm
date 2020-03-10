@@ -32,9 +32,11 @@ func (s *contentService) Create(ctx context.Context, repo, path string, params *
 	endpoint := fmt.Sprintf("/2.0/repositories/%s/src", repo)
 	headerParams := make(map[string]string)
 	formParams := url.Values{}
+
 	formParams.Add("message", params.Message)
 	formParams.Add("author", params.Signature.Name)
 	formParams.Add("branch", params.Branch)
+
 	if strings.HasPrefix(path, "/") {
 		formParams.Add(path, string(params.Data))
 	} else {
@@ -42,6 +44,7 @@ func (s *contentService) Create(ctx context.Context, repo, path string, params *
 		formParams.Add(path, string(params.Data))
 
 	}
+
 	headerParams["Content-Type"] = "application/x-www-form-urlencoded"
 
 	res, err := s.client.doForm(ctx, "POST", endpoint, headerParams, formParams, nil)
@@ -52,6 +55,7 @@ func (s *contentService) Update(ctx context.Context, repo, path string, params *
 	endpoint := fmt.Sprintf("/2.0/repositories/%s/src", repo)
 	headerParams := make(map[string]string)
 	formParams := url.Values{}
+
 	formParams.Add("message", params.Message)
 	formParams.Add("author", params.Signature.Name)
 	formParams.Add("branch", params.Branch)

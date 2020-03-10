@@ -42,18 +42,58 @@ func TestContentFind(t *testing.T) {
 }
 
 func TestContentCreate(t *testing.T) {
-	content := new(contentService)
-	_, err := content.Create(context.Background(), "atlassian/atlaskit", "README", nil)
-	if err != scm.ErrNotSupported {
-		t.Errorf("Expect Not Supported error")
+	defer gock.Off()
+
+	gock.New("https://api.bitbucket.org").
+		Post("/2.0/repositories/atlassian/atlaskit/src").
+		Reply(201)
+
+	params := &scm.ContentParams{
+		Message: "test",
+		Branch: "master",
+		Signature: scm.Signature{
+			Name:  "Monalisa Octocat",
+		},
+		Data: []byte("create data"),
+	}
+
+	client, _ := New("https://api.bitbucket.org")
+	res, err := client.Contents.Create(context.Background(), "atlassian/atlaskit", "README.md", params)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if res.Status != 201 {
+		t.Errorf("Unexpected Results")
 	}
 }
 
 func TestContentUpdate(t *testing.T) {
-	content := new(contentService)
-	_, err := content.Update(context.Background(), "atlassian/atlaskit", "README", nil)
-	if err != scm.ErrNotSupported {
-		t.Errorf("Expect Not Supported error")
+	defer gock.Off()
+
+	gock.New("https://api.bitbucket.org").
+		Post("/2.0/repositories/atlassian/atlaskit/src").
+		Reply(201)
+
+	params := &scm.ContentParams{
+		Message: "test",
+		Branch: "master",
+		Signature: scm.Signature{
+			Name:  "Monalisa Octocat",
+		},
+		Data: []byte("update data"),
+	}
+
+	client, _ := New("https://api.bitbucket.org")
+	res, err := client.Contents.Update(context.Background(), "atlassian/atlaskit", "README.md", params)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if res.Status != 201 {
+		t.Errorf("Unexpected Results")
 	}
 }
 
