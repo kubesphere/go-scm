@@ -55,6 +55,26 @@ type wrapper struct {
 	*scm.Client
 }
 
+func (c *wrapper) doForm(ctx context.Context, method, path string, headerParams map[string]string,
+	formParams url.Values, out interface{}) (*scm.Response, error) {
+
+	req := &scm.Request{
+		Method:   method,
+		Path:     path,
+		PostForm: formParams,
+	}
+
+	// add header parameters, if any
+	if len(headerParams) > 0 {
+		for h, v := range headerParams {
+			req.Header.Set(h, v)
+		}
+	}
+
+	return c.callApi(ctx, req, out)
+
+}
+
 // do wraps the Client.Do function by creating the Request and
 // unmarshalling the response.
 func (c *wrapper) do(ctx context.Context, method, path string, in, out interface{}) (*scm.Response, error) {
@@ -73,6 +93,11 @@ func (c *wrapper) do(ctx context.Context, method, path string, in, out interface
 		req.Body = buf
 	}
 
+	return c.callApi(ctx, req, out)
+
+}
+
+func (c *wrapper) callApi(ctx context.Context, req *scm.Request, out interface{}) (*scm.Response, error) {
 	// execute the http request
 	res, err := c.Client.Do(ctx, req)
 	if err != nil {

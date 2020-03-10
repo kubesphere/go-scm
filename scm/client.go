@@ -32,10 +32,11 @@ var (
 type (
 	// Request represents an HTTP request.
 	Request struct {
-		Method string
-		Path   string
-		Header http.Header
-		Body   io.Reader
+		Method   string
+		Path     string
+		Header   http.Header
+		Body     io.Reader
+		PostForm url.Values
 	}
 
 	// Response represents an HTTP response.
