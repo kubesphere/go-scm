@@ -39,11 +39,19 @@ func (s *contentService) Create(ctx context.Context, repo, path string, params *
 	return res, err
 }
 
-// TODO
 func (s *contentService) Update(ctx context.Context, repo, path string, params *scm.ContentParams) (*scm.Response, error) {
-	//projectRepo := strings.Split(repo, "/")
-	//endpoint := fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/browse/%s?at=%s", projectRepo[0], projectRepo[1], path, params.Branch)
-	return nil, scm.ErrNotSupported
+	projectRepo := strings.Split(repo, "/")
+	endpoint := fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/browse/%s", projectRepo[0], projectRepo[1], path)
+	headerParams := make(map[string]string)
+	formParams := url.Values{}
+
+	formParams.Add("message", params.Message)
+	formParams.Add("content", string(params.Data))
+	formParams.Add("branch", params.Branch)
+	formParams.Add("sourceCommitId", params.Branch)
+
+	res, err := s.client.doForm(ctx, "PUT", endpoint, headerParams, formParams, nil)
+	return res, err
 }
 
 func (s *contentService) Delete(ctx context.Context, repo, path, ref string) (*scm.Response, error) {

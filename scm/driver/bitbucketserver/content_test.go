@@ -64,3 +64,31 @@ func TestContentCreate(t *testing.T) {
 		t.Errorf("Unexpected Results")
 	}
 }
+
+func TestContentUpdate(t *testing.T) {
+	defer gock.Off()
+
+	gock.New("https://bitbucket.server").
+		Put("/rest/api/1.0/projects/atlassian/repos/atlaskit/browse/README").
+		Reply(200)
+
+	params := &scm.ContentParams{
+		Message: "test",
+		Branch: "master",
+		Signature: scm.Signature{
+			Name:  "Monalisa Octocat",
+		},
+		Data: []byte("update data"),
+	}
+
+	client, _ := New("https://bitbucket.server")
+	res, err := client.Contents.Update(context.Background(), "atlassian/atlaskit", "README", params)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if res.Status != 200 {
+		t.Errorf("Unexpected Results")
+	}
+}
