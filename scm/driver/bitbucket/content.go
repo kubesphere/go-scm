@@ -8,6 +8,8 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"net/url"
+	"strings"
 
 	"github.com/drone/go-scm/scm"
 )
@@ -27,11 +29,47 @@ func (s *contentService) Find(ctx context.Context, repo, path, ref string) (*scm
 }
 
 func (s *contentService) Create(ctx context.Context, repo, path string, params *scm.ContentParams) (*scm.Response, error) {
-	return nil, scm.ErrNotSupported
+	endpoint := fmt.Sprintf("/2.0/repositories/%s/src", repo)
+	headerParams := make(map[string]string)
+	formParams := url.Values{}
+
+	formParams.Add("message", params.Message)
+	formParams.Add("author", params.Signature.Name)
+	formParams.Add("branch", params.Branch)
+
+	if strings.HasPrefix(path, "/") {
+		formParams.Add(path, string(params.Data))
+	} else {
+		path = "/" + path
+		formParams.Add(path, string(params.Data))
+
+	}
+
+	headerParams["Content-Type"] = "application/x-www-form-urlencoded"
+
+	res, err := s.client.doForm(ctx, "POST", endpoint, headerParams, formParams, nil)
+	return res, err
 }
 
 func (s *contentService) Update(ctx context.Context, repo, path string, params *scm.ContentParams) (*scm.Response, error) {
-	return nil, scm.ErrNotSupported
+	endpoint := fmt.Sprintf("/2.0/repositories/%s/src", repo)
+	headerParams := make(map[string]string)
+	formParams := url.Values{}
+
+	formParams.Add("message", params.Message)
+	formParams.Add("author", params.Signature.Name)
+	formParams.Add("branch", params.Branch)
+	if strings.HasPrefix(path, "/") {
+		formParams.Add(path, string(params.Data))
+	} else {
+		path = "/" + path
+		formParams.Add(path, string(params.Data))
+
+	}
+	headerParams["Content-Type"] = "application/x-www-form-urlencoded"
+
+	res, err := s.client.doForm(ctx, "POST", endpoint, headerParams, formParams, nil)
+	return res, err
 }
 
 func (s *contentService) Delete(ctx context.Context, repo, path, ref string) (*scm.Response, error) {
