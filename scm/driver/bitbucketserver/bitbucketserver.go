@@ -126,7 +126,7 @@ func (c *wrapper) callApi(ctx context.Context, req *scm.Request, out interface{}
 	return res, json.NewDecoder(res.Body).Decode(out)
 }
 
-// Error represents a GitLab error.
+// Error represents a Bitbucket Server error.
 type Error struct {
 	Message string `json:"message"`
 }
