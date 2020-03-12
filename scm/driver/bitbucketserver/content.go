@@ -1,7 +1,6 @@
 package bitbucketserver
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"github.com/drone/go-scm/scm"
@@ -18,7 +17,11 @@ func (s *contentService) Find(ctx context.Context, repo, path, ref string) (*scm
 	endpoint := fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/browse/%s?at=%s", projectRepo[0], projectRepo[1], path, ref)
 	out := new(content)
 	res, err := s.client.do(ctx, "GET", endpoint, nil, out)
-	data := stringBuffer(out.Lines)
+	lines := []string{}
+	for _, v := range out.Lines {
+		lines = append(lines, v.Text)
+	}
+	data := strings.Join(lines, "\n")
 	return &scm.Content{
 		Path: path,
 		Data: []byte(data),
@@ -60,19 +63,6 @@ func (s *contentService) Delete(ctx context.Context, repo, path, ref string) (*s
 
 func (s *contentService) List(ctx context.Context, repo, path, ref string, opts scm.ListOptions) ([]*scm.ContentInfo, *scm.Response, error) {
 	return nil, nil, scm.ErrNotSupported
-}
-
-func stringBuffer(lines []contentLines) string {
-	var b bytes.Buffer
-	length := len(lines)
-	for i, line := range lines {
-		b.WriteString(line.Text)
-		if i != length-1 {
-			b.WriteString("\n")
-		}
-
-	}
-	return b.String()
 }
 
 type content struct {
