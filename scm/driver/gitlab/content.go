@@ -19,6 +19,9 @@ type contentService struct {
 	client *wrapper
 }
 
+// API here about contents operate.
+// GitLab API docs: https://docs.gitlab.com/ee/api/repository_files.html
+
 func (s *contentService) Find(ctx context.Context, repo, path, ref string) (*scm.Content, *scm.Response, error) {
 	path = url.QueryEscape(path)
 	path = strings.Replace(path, ".", "%2E", -1)
