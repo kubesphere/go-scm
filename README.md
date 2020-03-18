@@ -10,6 +10,8 @@ Support following drivers, and not all drivers used in kubesphere:
 4. GitLab
 5. Gitea
 6. Gogs
+7. Stash
 
 Want wore information please see [package scm](https://pkg.go.dev/github.com/drone/go-scm/scm?tab=doc)
+
 
