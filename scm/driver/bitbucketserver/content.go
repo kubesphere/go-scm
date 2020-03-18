@@ -28,6 +28,7 @@ func (s *contentService) Find(ctx context.Context, repo, path, ref string) (*scm
 	}, res, err
 }
 
+//Bitbucket Server api: https://docs.atlassian.com/bitbucket-server/rest/5.0.1/bitbucket-rest.html#idm45993793705776
 func (s *contentService) Create(ctx context.Context, repo, path string, params *scm.ContentParams) (*scm.Response, error) {
 	projectRepo := strings.Split(repo, "/")
 	endpoint := fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/browse/%s", projectRepo[0], projectRepo[1], path)

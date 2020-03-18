@@ -56,6 +56,9 @@ type wrapper struct {
 	*scm.Client
 }
 
+// API here about contents operate.
+// Bitbucket Cloud API docs: https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/%7Bworkspace%7D/%7Brepo_slug%7D/src
+
 func (c *wrapper) doForm(ctx context.Context, method, path string, headerParams map[string]string,
 	formParams url.Values, out interface{}) (*scm.Response, error) {
 

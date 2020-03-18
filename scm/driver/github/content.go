@@ -15,6 +15,9 @@ type contentService struct {
 	client *wrapper
 }
 
+// API here about contents operate.
+// GitHub API docs: https://developer.github.com/v3/repos/contents/#contents
+
 func (s *contentService) Find(ctx context.Context, repo, path, ref string) (*scm.Content, *scm.Response, error) {
 	endpoint := fmt.Sprintf("repos/%s/contents/%s?ref=%s", repo, path, ref)
 	out := new(content)
